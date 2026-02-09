@@ -10,3 +10,7 @@ Use the following command for implementation:
             --capacity "$(TARGET_CAPACITY)" \
             --auto-adjust-capacity \
             --prefer-az-cli
+
+To integrate it with Azure DevOps pipelines, refer to the following pipeline:
+
+https://github.com/SarsharImtiaz/Sarshar-DevOps-Playground/blob/main/Pipelines/scale_appserviceplan.yml
