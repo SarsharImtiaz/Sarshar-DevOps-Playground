@@ -1,0 +1,49 @@
+trigger: none
+
+stages:
+
+- stage: ScalePlanSku_appserviceplan_np
+  displayName: "Scale SKU: appserviceplan"
+  variables:
+    AZURE_SUBSCRIPTION_ID: "<Your_ID>"
+    RESOURCE_GROUP: "<Your_RG>"
+    PLAN_NAME: "appserviceplan-np"
+    TARGET_SKU: "B1"
+    TARGET_CAPACITY: "1"
+    AZURE_SERVICE_CONNECTION: "ServiceConnection"
+
+  jobs:
+  - job: ChangeSku
+    displayName: "Change SKU: appserviceplan-np"
+    pool:
+      vmImage: "ubuntu-latest"
+      
+    steps:
+    - checkout: self
+    - task: UsePythonVersion@0
+      displayName: "Use Python"
+      inputs:
+        versionSpec: "3.11"
+        addToPath: true
+        architecture: "x64"
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r Scripts/Python-Scaling/requirements.txt
+      displayName: "Install dependencies"
+
+    - task: AzureCLI@2
+      displayName: "Run SKU change (Python)"
+      inputs:
+        azureSubscription: "NPServiceConnection"
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          python Scripts/Python-Scaling/change_sku.py \
+            --subscription-id "$(AZURE_SUBSCRIPTION_ID)" \
+            --resource-group "$(RESOURCE_GROUP)" \
+            --plan-name "$(PLAN_NAME)" \
+            --target-sku "$(TARGET_SKU)" \
+            --capacity "$(TARGET_CAPACITY)" \
+            --auto-adjust-capacity \
+            --prefer-az-cli
