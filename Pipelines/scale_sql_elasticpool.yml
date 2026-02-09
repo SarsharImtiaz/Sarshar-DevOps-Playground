@@ -1,0 +1,61 @@
+trigger: none
+
+stages:
+
+- stage: UpscaleElasticPool_sql
+  displayName: "Upscale Elastic Pool: DEV"
+  variables:
+    AZURE_SUBSCRIPTION_ID: "<Your_ID>"
+    RESOURCE_GROUP: "<Your_RG>"
+    SERVER_NAME: "<Your_SQL_server>"
+    POOL_NAME: "<Your_ElasticPool_name>"
+
+    TARGET_TIER: "Standard"
+    POOL_DTU: "50"
+    DB_MIN_DTU: "0"
+    DB_MAX_DTU: "10"
+    POOL_MAX_SIZE: "53687091200"
+
+    AZURE_SERVICE_CONNECTION: "DevServiceConnection"
+
+  jobs:
+  - job: UpscalePool
+    displayName: "Upscale: sql-epool-corerelate-bec"
+    pool:
+      vmImage: "ubuntu-latest"
+
+    steps:
+    - checkout: self
+
+    - task: UsePythonVersion@0
+      displayName: "Use Python"
+      inputs:
+        versionSpec: "3.11"
+        addToPath: true
+        architecture: "x64"
+
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r Scripts/Python-Scaling/requirements.txt
+      displayName: "Install dependencies"
+
+    - task: AzureCLI@2
+      displayName: "Upscale Elastic Pool (Python)"
+      inputs:
+        azureSubscription: "$(AZURE_SERVICE_CONNECTION)"
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          set -euo pipefail
+          python Scripts/Python-Scaling/change_sql_elastic_pool_tier.py \
+            --subscription-id "$(AZURE_SUBSCRIPTION_ID)" \
+            --resource-group "$(RESOURCE_GROUP)" \
+            --server-name "$(SERVER_NAME)" \
+            --pool-name "$(POOL_NAME)" \
+            --target-tier "$(TARGET_TIER)" \
+            --pool-dtu "$(POOL_DTU)" \
+            --db-min-dtu "$(DB_MIN_DTU)" \
+            --db-max-dtu "$(DB_MAX_DTU)" \
+            --pool-max-size "$(POOL_MAX_SIZE)" \
+            --auto-adjust \
+            --prefer-az-cli
