@@ -1,0 +1,1 @@
+This folder contains my Infrastructure as Code (IaC) Terraform related work for Azure and AWS which I have automated.

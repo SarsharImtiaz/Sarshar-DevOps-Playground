@@ -1,0 +1,1 @@
+Creates a VPC and Internet Gateway.

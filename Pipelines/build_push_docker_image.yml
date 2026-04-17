@@ -1,0 +1,47 @@
+trigger: none
+pr: none
+resources:
+  repositories:
+  - repository: Cloud.AI
+    type: git
+    name: Cloud.AI
+    ref: refs/heads/Dev
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+- stage: API
+  displayName: API deployment
+  jobs:
+  - job: API_Deployment
+    displayName: API - Build and Deploy
+    steps:
+    - checkout: Cloud.AI
+
+    - task: Docker@2
+      displayName: Build the Image
+      inputs:
+        containerRegistry: 'StagingContainerRegistry_v1'
+        repository: 'aistaging'
+        command: 'build'
+        Dockerfile: '$(Build.SourcesDirectory)/src/AISummary/Dockerfile'
+        buildContext: '$(Build.SourcesDirectory)/src/AISummary/'
+        tags: |
+          $(Build.BuildNumber)
+
+    - task: Docker@2
+      displayName: Push the Image
+      inputs:
+        containerRegistry: 'StagingContainerRegistry_v1'
+        repository: 'aistaging'
+        command: 'push'
+        tags: |
+          $(Build.BuildNumber)
+
+    - task: AzureWebAppContainer@1
+      displayName: 'Azure Web App on Container Deploy: aistaging'
+      inputs:
+        azureSubscription: 'StagingServiceConnection'
+        appName: 'aistaging'
+        containers: 'acicorerelatebec.azurecr.io/aistaging:$(Build.BuildNumber)'

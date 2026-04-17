@@ -1,0 +1,1 @@
+Creates Elastic Beanstalk applications and environments.
