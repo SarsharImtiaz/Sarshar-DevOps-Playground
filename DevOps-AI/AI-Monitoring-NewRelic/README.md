@@ -213,7 +213,3 @@ Backend:
 ```bash
 uvicorn main:app --reload --port 8000
 ```
-
-## License
-
-No license has been added yet. Add a `LICENSE` file before distributing or accepting external contributions.
