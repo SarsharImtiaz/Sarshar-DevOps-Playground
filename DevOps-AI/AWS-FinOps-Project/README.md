@@ -511,3 +511,17 @@ Post-change Validation
 ```
 
 The model should never receive unrestricted production permissions.
+
+
+## A concise description of the project
+
+> Built an agentic AWS FinOps assistant using Python and Amazon
+> Bedrock. Claude Sonnet acts as the reasoning engine through Bedrock's
+> Converse API with tool use. The application exposes controlled
+> read-only boto3 functions for AWS Cost Explorer, EC2, CloudWatch, RDS,
+> EBS, and ECS. Instead of following a hardcoded investigation sequence,
+> Claude dynamically determines which AWS data it needs, correlates cost
+> with infrastructure utilization, and produces evidence-backed
+> optimization recommendations. AWS APIs remain the source of truth,
+> while the model provides investigation, reasoning, prioritization, and
+> explanation.
