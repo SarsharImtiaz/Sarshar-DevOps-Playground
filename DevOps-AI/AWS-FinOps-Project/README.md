@@ -8,6 +8,7 @@ dynamically investigates cost drivers, correlates resource configuration
 with CloudWatch utilization, and produces evidence-based FinOps
 recommendations.
 
+
 ## Overview
 
 Unlike a traditional script with a hardcoded investigation sequence,
@@ -510,25 +511,3 @@ Post-change Validation
 ```
 
 The model should never receive unrestricted production permissions.
-
-## Interview Summary
-
-A concise description of the project:
-
-> I built an agentic AWS FinOps assistant using Python and Amazon
-> Bedrock. Claude Sonnet acts as the reasoning engine through Bedrock's
-> Converse API with tool use. The application exposes controlled
-> read-only boto3 functions for AWS Cost Explorer, EC2, CloudWatch, RDS,
-> EBS, and ECS. Instead of following a hardcoded investigation sequence,
-> Claude dynamically determines which AWS data it needs, correlates cost
-> with infrastructure utilization, and produces evidence-backed
-> optimization recommendations. AWS APIs remain the source of truth,
-> while the model provides investigation, reasoning, prioritization, and
-> explanation.
-
-## Disclaimer
-
-This project is an engineering prototype for cost analysis and
-optimization assistance. Recommendations should be validated against
-workload requirements, performance metrics, business context, and AWS
-pricing before making production changes.
